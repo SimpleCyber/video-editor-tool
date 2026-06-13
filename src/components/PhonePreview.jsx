@@ -39,6 +39,13 @@ export default function PhonePreview({
               key={activeVideo.url}
               src={activeVideo.url}
               onLoadedMetadata={onLoadedMetadata}
+              muted={muted}
+              onCanPlay={() => {
+                if (videoRef.current) {
+                  videoRef.current.muted = muted;
+                  videoRef.current.volume = volume;
+                }
+              }}
               style={{ 
                 width: "100%", height: "100%", objectFit: "cover", objectPosition: `${(cropX ?? 0.5) * 100}% center`,
                 filter: `brightness(${brightness ?? 1}) contrast(${contrast ?? 1})`

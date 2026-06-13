@@ -282,7 +282,7 @@ export default function ClipForge() {
 
       <TopBar isDark={isDark} setIsDark={setIsDark} FileInputTrigger={() => fileInputRef.current.click()} t={t} />
 
-      <VideoTabs videos={videos} activeVideoIdx={activeVideoIdx} switchVideo={switchVideo} removeVideo={removeVideo} t={t} />
+      <VideoTabs videos={videos} activeVideoIdx={activeVideoIdx} switchVideo={switchVideo} removeVideo={removeVideo} t={t} clips={clips} />
 
       <div style={{ display: "flex", flex: 1, overflow: "hidden", minHeight: 0 }}>
         <PhonePreview 
@@ -302,7 +302,7 @@ export default function ClipForge() {
 
         <ClipSidebar 
           t={t} isDark={isDark} clips={clips} activeClip={activeClip} previewClip={previewClip} 
-          deleteClip={deleteClip} downloadClip={downloadClip} downloading={downloading}
+          deleteClip={deleteClip} downloadClip={downloadClip} downloading={downloading} activeVideo={activeVideo}
         />
       </div>
 

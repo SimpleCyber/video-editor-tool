@@ -2,7 +2,7 @@ import React from "react";
 import { formatTime, btn } from "../utils";
 
 export default function ClipSidebar({
-  t, isDark, clips, activeClip, previewClip, deleteClip, downloadClip, downloading
+  t, isDark, clips, activeClip, previewClip, deleteClip, downloadClip, downloading, activeVideo
 }) {
   return (
     <div style={{
@@ -18,12 +18,6 @@ export default function ClipSidebar({
         <span style={{ fontSize: 10, fontWeight: 600, letterSpacing: "0.08em", textTransform: "uppercase", color: t.textMuted }}>
           Saved clips
         </span>
-        {clips.length > 0 && (
-          <span style={{
-            background: t.accent, color: "#fff", borderRadius: 20,
-            padding: "1px 7px", fontSize: 10, fontWeight: 700,
-          }}>{clips.length}</span>
-        )}
       </div>
 
       <div style={{ flex: 1, overflowY: "auto", padding: 10 }}>
@@ -35,13 +29,14 @@ export default function ClipSidebar({
           </div>
         ) : clips.map((clip) => {
           const isActive = activeClip?.id === clip.id;
+          const isFromActiveVideo = activeVideo && clip.videoUrl === activeVideo.url;
           return (
             <div
               key={clip.id}
               onClick={() => previewClip(clip)}
               style={{
-                background: isActive ? t.accentMuted : t.bgCard,
-                border: `1px solid ${isActive ? t.accent : t.border}`,
+                background: isActive ? t.accentMuted : isFromActiveVideo ? `rgba(46, 204, 113, 0.08)` : t.bgCard,
+                border: `1.5px solid ${isActive ? t.accent : isFromActiveVideo ? "#2ecc71" : t.border}`,
                 borderRadius: 10, padding: "10px 12px", marginBottom: 7,
                 cursor: "pointer", transition: "border-color 0.15s",
               }}
