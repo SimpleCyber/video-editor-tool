@@ -4,8 +4,18 @@ import { iconBtn } from "../utils";
 export default function PhonePreview({
   activeVideo, videos, activeVideoIdx, switchVideo, removeVideo,
   videoRef, onLoadedMetadata, duration, currentTime, trimStart, trimEnd,
-  fileInputRef, playing, togglePlay, muted, toggleMute, volume, handleVolumeChange, setCurrentTime, formatTime, t, isDark, cropX
+  fileInputRef, playing, togglePlay, muted, toggleMute, volume, handleVolumeChange, setCurrentTime, formatTime, t, isDark, cropX,
+  brightness, contrast, vignette, setBrightness, setContrast, setVignette
 }) {
+  const SliderControl = ({ label, val, setVal, min, max, step }) => (
+    <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+      <div style={{ display: "flex", justifyContent: "space-between", fontSize: 11, color: t.textSub, fontWeight: 500 }}>
+        <span>{label}</span>
+        <span style={{ fontVariantNumeric: "tabular-nums" }}>{Math.round(val * 100)}%</span>
+      </div>
+      <input type="range" min={min} max={max} step={step} value={val} onChange={(e) => setVal(parseFloat(e.target.value))} style={{ accentColor: t.accent }} />
+    </div>
+  );
   return (
     <div style={{
       width: 260, flexShrink: 0, borderRight: `1px solid ${t.border}`,
@@ -23,14 +33,25 @@ export default function PhonePreview({
         boxShadow: isDark ? "0 0 40px rgba(124,111,239,0.12), 0 4px 24px rgba(0,0,0,0.6)" : "0 4px 20px rgba(0,0,0,0.15)",
       }}>
         {activeVideo ? (
-          <video
-            ref={videoRef}
-            key={activeVideo.url}
-            src={activeVideo.url}
-            onLoadedMetadata={onLoadedMetadata}
-            style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: `${(cropX ?? 0.5) * 100}% center` }}
-            playsInline
-          />
+          <>
+            <video
+              ref={videoRef}
+              key={activeVideo.url}
+              src={activeVideo.url}
+              onLoadedMetadata={onLoadedMetadata}
+              style={{ 
+                width: "100%", height: "100%", objectFit: "cover", objectPosition: `${(cropX ?? 0.5) * 100}% center`,
+                filter: `brightness(${brightness ?? 1}) contrast(${contrast ?? 1})`
+              }}
+              playsInline
+            />
+            {vignette > 0 && (
+              <div style={{
+                position: "absolute", top: 0, left: 0, width: "100%", height: "100%", pointerEvents: "none",
+                background: `radial-gradient(circle, transparent ${100 - vignette * 70}%, rgba(0,0,0,${vignette * 0.9}) 100%)`
+              }} />
+            )}
+          </>
         ) : (
           <div onClick={() => fileInputRef.current.click()} style={{
             width: "100%", height: "100%", display: "flex", flexDirection: "column",
@@ -115,6 +136,20 @@ export default function PhonePreview({
           <input type="range" min="0" max="1" step="0.05"
             value={muted ? 0 : volume} onChange={handleVolumeChange}
             style={{ width: 56, accentColor: t.accent }} />
+        </div>
+      )}
+
+      {activeVideo && (
+        <div style={{
+          width: "100%", padding: 14, background: t.bgPanel,
+          borderRadius: 12, border: `1px solid ${t.border}`, marginTop: 6,
+          boxShadow: isDark ? "0 4px 12px rgba(0,0,0,0.3)" : "none"
+        }}>
+          <div style={{ display: "flex", gap: 14, flexDirection: "column" }}>
+            <SliderControl label="Brightness" val={brightness} setVal={setBrightness} min={0} max={2} step={0.05} />
+            <SliderControl label="Contrast" val={contrast} setVal={setContrast} min={0} max={2} step={0.05} />
+            <SliderControl label="Vignette" val={vignette} setVal={setVignette} min={0} max={1} step={0.05} />
+          </div>
         </div>
       )}
     </div>

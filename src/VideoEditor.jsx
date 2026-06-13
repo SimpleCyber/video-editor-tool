@@ -34,6 +34,9 @@ export default function ClipForge() {
   const [trimStart, setTrimStart] = useState(0);
   const [trimEnd, setTrimEnd] = useState(0);
   const [cropX, setCropX] = useState(0.5); 
+  const [brightness, setBrightness] = useState(1);
+  const [contrast, setContrast] = useState(1);
+  const [vignette, setVignette] = useState(0);
   const [clips, setClips] = useState([]);
   const [dragging, setDragging] = useState(null);
   const [activeClip, setActiveClip] = useState(null);
@@ -103,6 +106,9 @@ export default function ClipForge() {
     setCurrentTime(0);
     setPlaying(false);
     setCropX(0.5);
+    setBrightness(1);
+    setContrast(1);
+    setVignette(0);
     if (fileInputRef.current) fileInputRef.current.value = "";
   };
 
@@ -111,6 +117,9 @@ export default function ClipForge() {
     setActiveVideoIdx(idx);
     setCurrentTime(0);
     setCropX(0.5);
+    setBrightness(1);
+    setContrast(1);
+    setVignette(0);
   };
 
   const removeVideo = async (idx) => {
@@ -218,7 +227,7 @@ export default function ClipForge() {
     const clip = {
       id: Date.now(), videoUrl: activeVideo.url, videoName: activeVideo.name,
       start: trimStart, end: trimEnd, muted, cropX, label: `Clip ${clips.length + 1}`,
-      duration: trimEnd - trimStart,
+      duration: trimEnd - trimStart, brightness, contrast, vignette
     };
     
     setClips((prev) => [...prev, clip]);
@@ -239,6 +248,9 @@ export default function ClipForge() {
     setTrimStart(clip.start);
     setTrimEnd(clip.end);
     setCropX(clip.cropX ?? 0.5);
+    setBrightness(clip.brightness ?? 1);
+    setContrast(clip.contrast ?? 1);
+    setVignette(clip.vignette ?? 0);
     setTimeout(() => {
       if (videoRef.current) {
         videoRef.current.currentTime = clip.start;
@@ -278,7 +290,8 @@ export default function ClipForge() {
           videoRef={videoRef} onLoadedMetadata={onLoadedMetadata} duration={duration} currentTime={currentTime} trimStart={trimStart} 
           trimEnd={trimEnd} fileInputRef={fileInputRef} playing={playing} togglePlay={togglePlay} muted={muted} toggleMute={toggleMute} 
           volume={volume} handleVolumeChange={handleVolumeChange} setCurrentTime={setCurrentTime} formatTime={formatTime} t={t} isDark={isDark}
-          cropX={cropX}
+          cropX={cropX} brightness={brightness} contrast={contrast} vignette={vignette}
+          setBrightness={setBrightness} setContrast={setContrast} setVignette={setVignette}
         />
 
         <CenterEditor

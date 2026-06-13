@@ -47,7 +47,23 @@ export const exportClip = async (clip, setDownloading, showToast) => {
       const cropW = vh * (9 / 16);
       const maxSx = vw - cropW;
       const sx = cX * maxSx;
+      
+      const b = clip.brightness ?? 1;
+      const c = clip.contrast ?? 1;
+      const vig = clip.vignette ?? 0;
+      
+      ctx.filter = `brightness(${b}) contrast(${c})`;
       ctx.drawImage(vid, sx, 0, cropW, cropH, 0, 0, 1080, 1920);
+      
+      if (vig > 0) {
+        ctx.filter = "none";
+        const R = Math.hypot(540, 960);
+        const grad = ctx.createRadialGradient(540, 960, Math.max(0, R * (1 - vig * 0.7)), 540, 960, R);
+        grad.addColorStop(0, 'transparent');
+        grad.addColorStop(1, `rgba(0,0,0,${vig * 0.9})`);
+        ctx.fillStyle = grad;
+        ctx.fillRect(0, 0, 1080, 1920);
+      }
       requestAnimationFrame(drawLoop);
     };
     requestAnimationFrame(drawLoop);
