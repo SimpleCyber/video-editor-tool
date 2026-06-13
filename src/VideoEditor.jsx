@@ -235,6 +235,20 @@ export default function ClipForge() {
     showToast(`Clip saved — ${formatTime(trimStart)} → ${formatTime(trimEnd)}`);
   };
 
+  const updateClip = async () => {
+    if (!activeVideo || !activeClip || trimEnd <= trimStart) return;
+    const updated = {
+      ...activeClip,
+      start: trimStart, end: trimEnd, muted, cropX,
+      duration: trimEnd - trimStart, brightness, contrast, vignette
+    };
+    
+    setClips((prev) => prev.map(c => c.id === activeClip.id ? updated : c));
+    setActiveClip(updated);
+    await saveClipToDb(updated);
+    showToast(`Clip updated!`);
+  };
+
   const deleteClip = async (id) => {
     await deleteClipFromDb(id);
     setClips((prev) => prev.filter((c) => c.id !== id));
@@ -297,7 +311,7 @@ export default function ClipForge() {
         <CenterEditor
           activeVideo={activeVideo} duration={duration} cropX={cropX} setCropX={setCropX} isDark={isDark} t={t}
           timelineRef={timelineRef} onTimelineMouseDown={onTimelineMouseDown} pct={pct} trimStart={trimStart} trimEnd={trimEnd}
-          currentTime={currentTime} muted={muted} formatTime={formatTime} saveClip={saveClip} setTrimStart={setTrimStart} setTrimEnd={setTrimEnd} fileInputRef={fileInputRef}
+          currentTime={currentTime} muted={muted} formatTime={formatTime} saveClip={saveClip} updateClip={updateClip} activeClip={activeClip} setActiveClip={setActiveClip} setTrimStart={setTrimStart} setTrimEnd={setTrimEnd} fileInputRef={fileInputRef}
         />
 
         <ClipSidebar 

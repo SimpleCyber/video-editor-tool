@@ -6,7 +6,7 @@ import { btn } from '../utils';
 export default function CenterEditor({
   activeVideo, duration, cropX, setCropX, isDark, t,
   timelineRef, onTimelineMouseDown, pct, trimStart, trimEnd,
-  currentTime, muted, formatTime, saveClip, setTrimStart, setTrimEnd, fileInputRef
+  currentTime, muted, formatTime, saveClip, updateClip, activeClip, setActiveClip, setTrimStart, setTrimEnd, fileInputRef
 }) {
   return (
     <div style={{
@@ -35,11 +35,21 @@ export default function CenterEditor({
           />
 
           <div style={{ display: "flex", gap: 8 }}>
-            <button onClick={saveClip} style={btn("primary", t)}>
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/></svg>
-              Save clip
-            </button>
-            <button onClick={() => { setTrimStart(0); setTrimEnd(duration); setCropX(0.5); }} style={btn("outline", t)}>
+            {activeClip ? (
+              <button onClick={updateClip} style={{ ...btn("primary", t), background: "#2ecc71" }}>
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+                Update clip
+              </button>
+            ) : (
+              <button onClick={saveClip} style={btn("primary", t)}>
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/></svg>
+                Save clip
+              </button>
+            )}
+            <button onClick={() => { 
+                setTrimStart(0); setTrimEnd(duration); setCropX(0.5); 
+                if (setActiveClip) setActiveClip(null);
+              }} style={btn("outline", t)}>
               Reset
             </button>
           </div>
